@@ -1,0 +1,108 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#17181a"><meta http-equiv="Content-Security-Policy" content="connect-src 'none'; form-action 'none'"><title>LockIn</title><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<style>
+:root{--bg:#17181a;--c2:#25282a;--card:#3f5d4f;--on:#f3efe6;--ink:#f3efe6;--mut:#a9b8ae;--ac:#e8654b;--ln:#ffffff1a;--top:#a4452d;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:light){:root:not([data-theme=dark]){--bg:#f1e8da;--c2:#e4d8c6;--ink:#25302a;--mut:#5f6f64;--ln:#0000001a;--top:#e9a58f;color-scheme:light}}
+:root[data-theme=dark]{--bg:#17181a;--c2:#25282a;--ink:#f3efe6;--mut:#a9b8ae;--ln:#ffffff1a;--top:#a4452d;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(180deg,var(--top) 0,var(--bg) 300px) no-repeat,var(--bg);min-height:100vh}
+.sf,h1,h2,h3,.big,.mb,.fc{font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif;font-weight:400}
+header{display:flex;align-items:center;gap:10px;padding:14px 16px}header h1{margin:0;font-size:24px;flex:1}
+main{padding:0 14px 120px;max-width:640px;margin:auto}
+.card{background:var(--c2);border-radius:22px;padding:16px;margin:0 0 12px}
+.hero{background:var(--card);color:var(--on);border-radius:26px;padding:20px 12px;margin:0 0 12px;text-align:center}
+.hero h2{font-size:27px;margin:0 8px 6px;line-height:1.15}i{font-style:italic}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--ln);border-radius:14px;padding:12px;margin:0 0 8px}
+button{font:inherit;border:0;border-radius:99px;padding:11px 18px;background:var(--ac);color:#fff;font-weight:600;cursor:pointer}
+button.g{background:var(--card);color:var(--on)}button.x{background:none;color:var(--mut);padding:6px 10px}
+.pill{background:var(--c2);color:var(--ink);font-size:13px;padding:8px 12px}.pill.on{background:var(--card);color:var(--on)}
+.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}.row>.s{flex:0}
+.t{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--ln)}.t:last-child{border:0}
+.t b{flex:1;font-weight:600}.done b{text-decoration:line-through;opacity:.5}input[type=checkbox]{accent-color:var(--ac);width:22px;margin:0}
+.chip{font-size:12px;padding:4px 10px;border-radius:99px;border:1px solid var(--ln);color:var(--mut);white-space:nowrap}
+.m{color:var(--mut);font-size:14px}h3{margin:0 0 8px;font-size:20px}
+.pl{padding:9px 12px;margin:5px 0;border-radius:14px;background:var(--bg);font-size:14px}.pl.now{background:var(--card);color:var(--on)}
+.mr{display:flex;overflow-x:auto;gap:4px;padding:6px 0}.mb{background:none;color:var(--mut);font-size:19px;padding:8px 16px;border:1px solid transparent;white-space:nowrap}.mb.on{color:var(--on);font-style:italic;border-color:var(--on)}
+.mas{animation:bob 3s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-6px)}}
+.big{font-size:56px;text-align:center;margin:4px 0 10px}
+.fc{min-height:160px;display:grid;place-items:center;text-align:center;font-size:23px;background:var(--card);color:var(--on);border-radius:26px;padding:20px;margin-bottom:10px;cursor:pointer}
+.op{display:block;width:100%;text-align:left;background:var(--bg);color:var(--ink);border:1px solid var(--ln);border-radius:16px;margin:0 0 8px}.op.ok{background:var(--card);color:var(--on)}.op.no{background:var(--ac);color:#fff}
+.ban{background:var(--ac);color:#fff;border-radius:22px;padding:14px;margin:0 0 12px;display:flex;gap:10px;align-items:center}.ban span{flex:1}.ban button{background:#fff;color:var(--ac)}
+nav{position:fixed;left:14px;right:14px;bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-around;padding:8px;background:#1e2022;border-radius:32px;max-width:612px;margin:auto;box-shadow:0 8px 24px #0006}
+nav button{background:none;font-size:22px;width:52px;height:52px;padding:0;border-radius:50%;filter:grayscale(.6)}nav button.on{background:var(--ac);filter:none}
+#toast{position:fixed;left:12px;right:12px;top:calc(10px + env(safe-area-inset-top,0px));background:var(--ac);color:#fff;padding:13px 16px;border-radius:18px;display:none;z-index:9;font-weight:600}
+</style></head><body>
+<header><svg width="38" height="38" viewBox="0 0 64 64" aria-label="LockIn logo"><rect width="64" height="64" rx="19" fill="#e8654b"/><rect x="17" y="29" width="30" height="22" rx="7" fill="#f3efe6"/><path d="M23 29v-6a9 9 0 0 1 18 0v6" fill="none" stroke="#f3efe6" stroke-width="5" stroke-linecap="round"/><path d="M26 40l5 5 9-9" fill="none" stroke="#3f5d4f" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg><h1>Lock<i>In</i></h1><button class="pill" onclick="lock()" aria-label="lock">🔒</button><button id="bell" class="pill" onclick="ask()"></button></header>
+<main id="v"></main><div id="toast"></div><nav id="nav"></nav>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let S=null,K=null,SALT=null,sv;const BLANK=()=>({tasks:[],exams:[],cards:[],fired:{},log:{},mood:null,f:null});
+const enc=new TextEncoder(),dec=new TextDecoder(),b64=u=>{let s='';new Uint8Array(u).forEach(c=>s+=String.fromCharCode(c));return btoa(s)},ub=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const kd=async(p,s)=>crypto.subtle.deriveKey({name:'PBKDF2',salt:s,iterations:250000,hash:'SHA-256'},await crypto.subtle.importKey('raw',enc.encode(p),'PBKDF2',false,['deriveKey']),{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+async function seal(){const iv=crypto.getRandomValues(new Uint8Array(12)),d=await crypto.subtle.encrypt({name:'AES-GCM',iv},K,enc.encode(JSON.stringify(S)));return JSON.stringify({s:b64(SALT),i:b64(iv),d:b64(d)})}
+async function wr(){if(!K||!S)return;try{localStorage.setItem('lockin_e',await seal())}catch(e){}}
+async function unseal(t,p){const j=JSON.parse(t),s=ub(j.s),k=await kd(p,s);return{key:k,salt:s,S:JSON.parse(dec.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(j.i)},k,ub(j.d))))}}
+function boot(){const e=localStorage.getItem('lockin_e');$('#nav').innerHTML='';$('#v').innerHTML=`<div class=hero><h2>${e?'Welcome <i>back</i>':'Create your <i>passcode</i>'}</h2>${mascot('calm')}<p>${e?'Enter your passcode to unlock':'Your data is encrypted with it and never leaves this device. If you forget it, it cannot be recovered.'}</p><input id=pw type=password placeholder="Passcode" autocomplete=off>${e?'':'<input id=pw2 type=password placeholder="Repeat passcode">'}<button style="width:100%" onclick="go()">${e?'Unlock':'Create and lock'}</button><p id=er class=m></p>${e?'<button class=x onclick="nuke(this)">Forgot it? Erase everything</button>':''}</div>`}
+async function go(){const p=$('#pw').value,e=localStorage.getItem('lockin_e'),er=$('#er');try{if(e){const o=await unseal(e,p);K=o.key;SALT=o.salt;S=Object.assign(BLANK(),o.S)}else{if(p.length<4){er.textContent='Use at least 4 characters';return}if(p!=$('#pw2').value){er.textContent='Passcodes do not match';return}SALT=crypto.getRandomValues(new Uint8Array(16));K=await kd(p,SALT);S=BLANK();try{Object.assign(S,JSON.parse(localStorage.getItem('lockin')||'{}'));localStorage.removeItem('lockin')}catch(x){}await wr()}render();tick()}catch(x){er.textContent=e?'Wrong passcode':'Could not set up encryption on this browser'}}
+async function lock(){clearTimeout(sv);await wr();K=null;S=null;boot()}
+function nuke(b){if(b.dataset.s!='1'){b.dataset.s=1;b.textContent='Tap again to erase everything';return}try{localStorage.removeItem('lockin_e');localStorage.removeItem('lockin')}catch(e){}boot()}
+async function bk(){await wr();bo=await seal();try{await navigator.share({text:bo})}catch(e){try{await navigator.clipboard.writeText(bo)}catch(x){}}render()}
+async function rs(){try{const o=await unseal($('#bt').value.trim(),$('#bp').value);S=Object.assign(BLANK(),o.S);bx=0;await wr();toast('Restored ✅');render()}catch(e){toast('Could not restore: check the text and passcode')}}
+const save=()=>{clearTimeout(sv);sv=setTimeout(wr,100)},id=()=>Math.random().toString(36).slice(2,9);
+let bx=0,bo='',tab='home',mode='study',rev=false,sc=[0,0],qz=null,cur=null;
+const fmt=d=>new Date(d).toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+const dl=d=>Math.round((new Date(d+'T00:00')-new Date(new Date().toDateString()))/864e5);
+const TABS=[['home','🏠'],['tasks','✅'],['exams','🎓'],['cards','🃏'],['board','📌']],MOODS=[['Low energy','low'],['Tense','tense'],['Calm','calm'],['Balanced','bal'],['Energized','en']];
+const mmss=r=>{r=Math.max(0,Math.ceil(r/1e3));return String(r/60|0).padStart(2,'0')+':'+String(r%60).padStart(2,'0')};
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',7000)}
+function beep(){try{const a=new(window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=880;g.gain.value=.15;o.start();o.stop(a.currentTime+.4)}catch(e){}}
+function notify(t,b){toast(t+' — '+b);beep();try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}try{if(Notification.permission==='granted'){const o={body:b,icon:'icon-192.png',vibrate:[200,100,200]};navigator.serviceWorker&&navigator.serviceWorker.ready?navigator.serviceWorker.ready.then(r=>r.showNotification(t,o)).catch(()=>{try{new Notification(t,o)}catch(e){}}):new Notification(t,o)}}catch(e){}}
+function ask(){try{Notification.requestPermission().then(p=>{render();if(p==='granted')notify('🔔 Notifications on','You will get reminders')})}catch(e){toast('Notifications are not supported here — in-app alerts still work')}}
+document.addEventListener('click',()=>{try{if(Notification.permission=='default')ask()}catch(e){}},{once:true});
+const log=()=>{const k=new Date().toDateString();S.log[k]=(S.log[k]||0)+1;save()};
+function streak(){let n=0,d=new Date();if(!S.log[d.toDateString()])d.setDate(d.getDate()-1);while(S.log[d.toDateString()]){n++;d.setDate(d.getDate()-1)}return n}
+function tick(){if(!S)return;const n=Date.now();S.tasks.forEach(t=>{const k='t'+t.id;if(t.done||!t.due||S.fired[k])return;if(new Date(t.due)-t.rem*6e4<=n){S.fired[k]=1;notify('⏰ '+t.t,'Due '+fmt(t.due))}});
+S.exams.forEach(e=>{const k='e'+e.id,d=dl(e.date);if(!S.fired[k]&&d>=0&&d<=1){S.fired[k]=1;notify('🎓 '+e.name,d?'Exam tomorrow — quick review?':'Exam today — you got this')}});
+if(S.f){const r=S.f.end-n;if(r<=0){const l=S.f.len;S.f=null;log();notify('✅ Focus done','Nice, '+l+' min locked in. Take a break');render()}else{const el=$('#ft');if(el)el.textContent=mmss(r)}}save()}
+setInterval(tick,1000);let away=0;document.addEventListener('visibilitychange',()=>{if(document.hidden)away=Date.now();else if(S&&Date.now()-away>3e5)lock();else tick()});
+const addTask=()=>{const t=$('#t').value.trim();if(!t)return;S.tasks.push({id:id(),t,due:$('#d').value,rem:+$('#r').value,done:0});save();tick();render()};
+const addExam=()=>{const n=$('#en').value.trim(),d=$('#ed').value;if(!n||!d)return;S.exams.push({id:id(),name:n,date:d,topics:$('#et').value});save();tick();render()};
+const addCard=()=>{const q=$('#q').value.trim(),a=$('#a').value.trim();if(!q||!a)return;S.cards.push({id:id(),q,a,box:0,nx:0});save();render()};
+const del=(k,i)=>{S[k]=S[k].filter(x=>x.id!=i);save();render()},tog=i=>{const t=S.tasks.find(x=>x.id==i);t.done=!t.done;if(t.done)log();save();render()};
+const setMood=k=>{S.mood={k,d:new Date().toDateString()};save();render()},fstart=m=>{S.f={end:Date.now()+m*6e4,len:m};save();render()},fstop=()=>{S.f=null;save();render()};
+function days(e){const n=dl(e.date);if(n<2)return null;const T=e.topics.split(',').map(x=>x.trim()).filter(Boolean),sd=n-1,D=[...Array(sd)].map(()=>[]);T.forEach((t,i)=>D[Math.floor(i*sd/T.length)].push(t));return D}
+function plan(e){const n=dl(e.date);if(n<0)return'<p class=m>Exam finished 🎉</p>';const D=days(e);if(!D)return'<div class="pl now"><b>Today</b> Final review: flashcards + quiz, then rest</div>';
+let h=D.slice(0,7).map((a,i)=>`<div class="pl ${i?'':'now'}"><b>${i?new Date(Date.now()+i*864e5).toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'}):'Today'}</b> ${a.length?esc(a.join(' · ')):'Flashcards + practice quiz'}</div>`).join('');
+return h+(D.length>7?'<p class=m>…plan continues daily</p>':'')+'<div class=pl><b>Day before</b> Light review, sleep early</div>'}
+function mascot(k){const o={low:['#9db4d8','<circle cx=60 cy=60 r=42 />'],tense:['#f0a35e','<polygon points="60,12 75,40 108,38 86,62 100,95 60,78 20,95 34,62 12,38 45,40"/>'],calm:['#e9a0d9','<polygon points="60,14 100,36 100,82 60,106 20,82 20,36"/>'],bal:['#9fd8b8','<rect x=18 y=18 width=84 height=84 rx=28 />'],en:['#ffc83d','<polygon points="60,6 72,30 98,22 90,48 114,60 90,72 98,98 72,90 60,114 48,90 22,98 30,72 6,60 30,48 22,22 48,30"/>']}[k||'calm'],cl=k=='low'||k=='calm',mo={low:'M50 74h20',tense:'M48 78q12-9 24 0',calm:'M55 74q5 4 10 0',bal:'M48 72q12 10 24 0',en:'M46 70q14 14 28 0'}[k||'calm'];
+return`<svg class=mas width=130 height=130 viewBox="0 0 120 120"><g fill="${o[0]}">${o[1]}</g><g stroke="#25282a" stroke-width=3 fill="none" stroke-linecap="round">${cl?'<path d="M38 56q8 7 16 0M66 56q8 7 16 0"/>':'<circle cx=47 cy=54 r=3.5 fill="#25282a"/><circle cx=73 cy=54 r=3.5 fill="#25282a"/>'}<path d="${mo}"/></g></svg>`}
+function sug(){const m=S.mood&&S.mood.d==new Date().toDateString()?S.mood.k:null;if(!m)return['Pick a vibe above and I will shape your day'];
+const T=S.tasks.filter(t=>!t.done).sort((a,b)=>(a.due||'9').localeCompare(b.due||'9')),cd=S.cards.filter(c=>c.nx<=Date.now()).length,E=S.exams.filter(e=>dl(e.date)>=0).sort((a,b)=>a.date.localeCompare(b.date))[0],L=[];
+if(m=='low'||m=='tense'){L.push(cd?`Easy win: review ${cd} flashcards (5 min)`:'Easy win: add a few flashcards');if(T[0])L.push(`Tiny step: 10 min on “${esc(T[0].t)}”`);L.push(m=='tense'?'Take 3 slow breaths, then start small':'Rest counts. One short focus round is enough')}
+else{if(T[0])L.push(`Hardest first: “${esc(T[0].t)}” · 25 min focus`);if(E){const D=days(E);L.push('Study: '+esc(D&&D[0].length?D[0].join(' · '):E.name))}if(cd)L.push(cd+' cards due. Try the quiz!');if(!L.length)L.push('Add a task or exam to get started')}return L}
+function nq(){const c=S.cards[Math.random()*S.cards.length|0],sh=a=>a.sort(()=>Math.random()-.5);qz={c,p:null,o:sh([c.a,...sh(S.cards.filter(x=>x.a!=c.a)).slice(0,3).map(x=>x.a)])}}
+const pick=i=>{if(qz.p!==null)return;qz.p=i;sc[1]++;if(qz.o[i]==qz.c.a)sc[0]++;render()};
+function rate(ok){const c=S.cards.find(x=>x.id==cur),iv=[0,1,3,7,14];c.box=ok?Math.min(4,c.box+1):0;c.nx=ok?Date.now()+iv[c.box]*864e5:Date.now()+3e5;rev=false;save();render()}
+function V(){
+if(tab=='home'){const m=S.mood&&S.mood.d==new Date().toDateString()?S.mood.k:null,gr=!window.Notification||Notification.permission!='granted';
+return(gr?'<div class=ban><span>Turn on notifications so I can remind you</span><button onclick=ask()>Turn on</button></div>':'')+`<div class=hero><h2>How do you <i>feel</i> right now?</h2>${mascot(m)}<div class=mr>${MOODS.map(([l,k])=>`<button class="mb ${m==k?'on':''}" onclick="setMood('${k}')">${l}</button>`).join('')}</div></div>
+<div class=card><h3>Your <i>move</i></h3>${sug().map(x=>`<div class=pl>${x}</div>`).join('')}</div>
+<div class=card><h3>Focus <i>timer</i></h3>${S.f?`<div class=big id=ft>${mmss(S.f.end-Date.now())}</div><button style="width:100%" class=g onclick=fstop()>Stop</button>`:`<div class=big>25:00</div><div class=row><button onclick=fstart(25)>25 min</button><button class=g onclick=fstart(45)>45 min</button><button class=g onclick=fstart(10)>10 min</button></div>`}</div>
+<div class=row><span class=chip>🔥 ${streak()} day streak</span><span class=chip>${S.tasks.filter(t=>!t.done).length} open tasks</span><span class=chip>${S.cards.filter(c=>c.nx<=Date.now()).length} cards due</span></div><div class=card style="margin-top:12px"><h3>Private <i>vault</i></h3><p class=m>Encrypted on this device and never uploaded. Back up as encrypted text you can keep anywhere.</p><div class=row><button class=g onclick=bk()>Back up</button><button class=g onclick="bx=bx?0:1;render()">Restore</button></div>${bx?'<textarea id=bt rows=3 placeholder="Paste backup text" style="margin-top:8px"></textarea><input id=bp type=password placeholder="Passcode of that backup"><button onclick=rs()>Restore now</button>':''}${bo?`<textarea rows=3 readonly onclick=this.select() style="margin-top:8px">${esc(bo)}</textarea>`:''}</div>`}
+if(tab=='tasks'){const L=[...S.tasks].sort((a,b)=>a.done-b.done||(a.due||'9').localeCompare(b.due||'9'));
+return`<div class=card><h3>New <i>task</i></h3><input id=t placeholder="Assignment or to-do"><input id=d type=datetime-local><select id=r><option value=0>Remind me at due time</option><option value=10>10 min before</option><option value=60>1 hour before</option><option value=1440>1 day before</option></select><button onclick=addTask()>Add task</button></div><div class=card>${L.map(t=>`<div class="t ${t.done?'done':''}"><input type=checkbox ${t.done?'checked':''} onchange="tog('${t.id}')"><b>${esc(t.t)}</b>${t.due?`<span class=chip>${fmt(t.due)}</span>`:''}<button class=x onclick="del('tasks','${t.id}')">✕</button></div>`).join('')||'<p class=m>Nothing yet. Add your first task ✨</p>'}</div>`}
+if(tab=='exams')return`<div class=card><h3>New <i>exam</i></h3><input id=en placeholder="Exam name"><input id=ed type=date><textarea id=et rows=2 placeholder="Topics, separated by commas"></textarea><button onclick=addExam()>Add exam</button></div>`+[...S.exams].sort((a,b)=>a.date.localeCompare(b.date)).map(e=>{const n=dl(e.date);return`<div class=card><div class=row><h3>${esc(e.name)}</h3><span class="chip s">${n<0?'done':n==0?'today':n+' days left'}</span><button class="x s" onclick="del('exams','${e.id}')">✕</button></div>${plan(e)}</div>`}).join('');
+if(tab=='cards'){let h=`<div class=row style="margin-bottom:10px">${['study','quiz','add'].map(m=>`<button class="pill ${mode==m?'on':''}" onclick="mode='${m}';rev=false;qz=null;render()">${m[0].toUpperCase()+m.slice(1)}</button>`).join('')}</div>`;
+if(mode=='add')return h+`<div class=card><input id=q placeholder="Question"><input id=a placeholder="Answer"><button onclick=addCard()>Add card</button><p class=m>${S.cards.length} cards saved</p></div>`;
+if(!S.cards.length)return h+'<div class=card><p class=m>Add some cards first.</p></div>';
+if(mode=='study'){const D=S.cards.filter(c=>c.nx<=Date.now());if(!D.length)return h+'<div class=card><h3>All caught up 🎉</h3><p class=m>Come back later for more reviews.</p></div>';cur=D[0].id;
+return h+`<div class=fc onclick="rev=!rev;render()">${esc(rev?D[0].a:D[0].q)}</div><p class=m style="text-align:center">${D.length} due · tap card to flip</p>`+(rev?`<div class=row><button class=g onclick=rate(0)>Again</button><button onclick=rate(1)>Got it</button></div>`:'')}
+if(S.cards.length<2)return h+'<div class=card><p class=m>Add at least 2 cards for a quiz.</p></div>';
+if(!qz)nq();return h+`<div class=card><span class=chip>Score ${sc[0]}/${sc[1]}</span><h3 style="margin-top:10px">${esc(qz.c.q)}</h3>${qz.o.map((o,i)=>`<button class="op ${qz.p===null?'':o==qz.c.a?'ok':i==qz.p?'no':''}" onclick="pick(${i})">${esc(o)}</button>`).join('')}${qz.p!==null?'<button onclick="qz=null;render()">Next question</button>':''}</div>`}
+const G=[['Overdue','var(--ac)'],['Today','var(--card)'],['This week','#9db4d8'],['Later','#e9a0d9']],B=[[],[],[],[]],add=(t,w,k)=>B[w<0?0:w==0?1:w<=7?2:3].push({t,w,k});
+S.tasks.filter(t=>!t.done&&t.due).forEach(t=>add(t.t,dl(t.due.slice(0,10)),'📝'));S.exams.forEach(e=>add(e.name,dl(e.date),'🎓'));
+return G.map((g,i)=>`<div class=card style="border-left:8px solid ${g[1]}"><h3>${g[0]} <span class=chip>${B[i].length}</span></h3>${B[i].sort((a,b)=>a.w-b.w).map(x=>`<div class=t><span>${x.k}</span><b>${esc(x.t)}</b><span class=m>${x.w<0?-x.w+'d ago':x.w==0?'today':'in '+x.w+'d'}</span></div>`).join('')||'<p class=m>Clear ✨</p>'}</div>`).join('')}
+function render(){const y=scrollY;$('#v').innerHTML=V();$('#nav').innerHTML=TABS.map(t=>`<button class="${tab==t[0]?'on':''}" aria-label="${t[0]}" onclick="tab='${t[0]}';render()">${t[1]}</button>`).join('');
+const p=window.Notification?Notification.permission:'none';$('#bell').textContent=p=='granted'?'🔔 On':'🔕 Enable';$('#bell').className='pill'+(p=='granted'?' on':'');scrollTo(0,y)}
+try{navigator.serviceWorker.register('sw.js')}catch(e){}
+boot();
+</script></body></html>
